@@ -8,12 +8,13 @@
 
 This repository contains all components required to run the Satellite1-HAT on a Raspberry Pi Zero W2:
 
-- **`satellite1-rpi`** — Python SDK library  
-- **`satellite1-rpi-setup`** — Raspberry Pi configuration packaged as a `.deb`  
-- **`rpi-kernel-fusb302`** — Custom Raspberry Pi kernel with USB-C Power Delivery support  
+- **`satellite1-rpi`** — Python SDK library
+- **`satellite1-rpi-setup`** — Raspberry Pi configuration packaged as a `.deb`
+- **`rpi-kernel-fusb302`** — Custom Raspberry Pi kernel with USB-C Power Delivery support
+
 - **`image-builder`** — Generates SD-card images with everything preinstalled
 
-> **Target Platform:** Raspberry Pi Zero W2  
+> **Target Platform:** Raspberry Pi Zero W2
 > **OS:** Raspberry Pi OS (Bookworm)
 
 ---
