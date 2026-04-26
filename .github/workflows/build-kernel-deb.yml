@@ -1,0 +1,38 @@
+name: Build Kernel .deb Packages
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # We need to run on an ARM64 runner or use emulation. Since we are building for arm64,
+    # we can use qemu-user-static via docker/setup-buildx-action.
+    # However, the default ubuntu-latest runner is x86_64. We'll use buildx to emulate arm64.
+    # Alternatively, we can use a self-hosted ARM64 runner, but for simplicity we use emulation.
+    # Note: Emulation is slower but acceptable for occasional builds.
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      with:
+        install: true
+
+    - name: Build kernel .deb packages
+      # We change to the rpi-kernel-fusb302 directory and run make deb
+      working-directory: rpi-kernel-fusb302
+      run: |
+        make deb
+
+    - name: Upload .deb packages as artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: kernel-deb-packages
+        path: rpi-kernel-fusb302/out/*.deb
+        if-no-files-found: error
