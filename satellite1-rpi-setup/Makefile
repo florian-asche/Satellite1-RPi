@@ -35,7 +35,7 @@ SRC_INSTALL_FILE   := $(SRC_DEBIAN_DIR)/install.in
 
 DOCKER        ?= docker
 PLATFORM      ?= linux/arm64
-DOCKER_MAKE   ?= ../../docker/Makefile
+DOCKER_MAKE   ?= docker/Makefile
 DOCKER_IMAGE  ?= satellite1-deb-builder   # must match DEB_IMAGE_NAME in prj/Docker/Makefile
 
 # ---- Phony targets --------------------------------------------------------
@@ -71,7 +71,7 @@ deb: image $(DEB_FILE)
 
 # Build the shared deb-builder image (delegated to prj/Docker/Makefile)
 image:
-	$(MAKE) -C ../../docker deb-image
+	$(MAKE) -C docker deb-image
 
 # ---- Local packaging logic (no Docker here) ------------------------------
 
