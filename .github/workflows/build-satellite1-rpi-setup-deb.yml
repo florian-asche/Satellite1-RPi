@@ -1,0 +1,32 @@
+name: Build satellite1-rpi-setup .deb Package
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      with:
+        install: true
+
+    - name: Build satellite1-rpi-setup .deb package
+      working-directory: satellite1-rpi-setup
+      run: |
+        make deb
+
+    - name: Upload .deb package as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: satellite1-rpi-setup-deb
+        path: satellite1-rpi-setup/out/*.deb
+        if-no-files-found: error
