@@ -24,8 +24,7 @@ jobs:
       with:
         install: true
 
-    - name: Create debian package
-      # We change to the rpi-kernel-fusb302 directory and run make deb
+    - name: Build kernel .deb packages
       working-directory: rpi-kernel-fusb302
       run: |
         make deb
