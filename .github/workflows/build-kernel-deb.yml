@@ -1,4 +1,4 @@
-name: Build Kernel .deb Packages
+name: "Build: Kernel"
 
 on:
   push:
@@ -24,7 +24,13 @@ jobs:
       with:
         install: true
 
-    - name: Build kernel .deb packages
+    - name: Create docker image
+      # We change to the rpi-kernel-fusb302 directory and run make deb
+      working-directory: rpi-kernel-fusb302
+      run: |
+        make image
+
+    - name: Create debian package
       # We change to the rpi-kernel-fusb302 directory and run make deb
       working-directory: rpi-kernel-fusb302
       run: |
