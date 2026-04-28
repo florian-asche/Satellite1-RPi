@@ -1,4 +1,4 @@
-name: Build satellite1-rpi-setup .deb Package
+name: "Build: Setup"
 
 on:
   push:
