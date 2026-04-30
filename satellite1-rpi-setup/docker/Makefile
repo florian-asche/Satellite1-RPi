@@ -13,7 +13,7 @@ help:
 	@echo "  make deb-image    Build deb-builder Docker image"
 
 deb-image: $(DEB_DOCKERFILE)
-	$(DOCKER) build --platform=$(PLATFORM) \
+	$(DOCKER) buildx build --platform=$(PLATFORM) --load \
 	  -f $(DEB_DOCKERFILE) \
 	  -t $(DEB_IMAGE_NAME) \
 	  $(DEB_BUILD_CTX)
