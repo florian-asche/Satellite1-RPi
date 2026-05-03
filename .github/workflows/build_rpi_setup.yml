@@ -2,9 +2,7 @@ name: "Build: Setup"
 
 on:
   push:
-    branches: [ develop ]
   pull_request:
-    branches: [ develop ]
   workflow_dispatch:
 
 jobs:
@@ -60,6 +58,34 @@ jobs:
           name: satellite1-rpi-setup-deb
           path: satellite1-rpi-setup/out/*.deb
           if-no-files-found: error
+
+      # Create Release for Tags
+      - name: Create Release for Tags
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          prerelease: false
+          draft: false
+          files: |
+            satellite1-rpi-setup/out/*.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Create Release for Branches
+      - name: Create Release for Branches
+        if: '!startsWith(github.ref, ''refs/tags/'')'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          prerelease: true
+          draft: false
+          files: |
+            satellite1-rpi-setup/out/*.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Save APT cache for future builds
       - name: Move packages to temp location for caching

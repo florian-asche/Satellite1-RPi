@@ -2,9 +2,7 @@ name: "Build: Kernel"
 
 on:
   push:
-    branches: [ develop ]
   pull_request:
-    branches: [ develop ]
   workflow_dispatch:
 
 jobs:
@@ -54,12 +52,33 @@ jobs:
         run: |
           make deb
 
-      - name: Upload .deb packages as artifacts
-        uses: actions/upload-artifact@v4
+      # Create Release for Tags
+      - name: Create Release for Tags
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
         with:
-          name: kernel-deb-packages
-          path: rpi-kernel-fusb302/out/*.deb
-          if-no-files-found: error
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          prerelease: false
+          draft: false
+          files: |
+            rpi-kernel-fusb302/out/*.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Create Release for Branches
+      - name: Create Release for Branches
+        if: '!startsWith(github.ref, ''refs/tags/'')'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          prerelease: true
+          draft: false
+          files: |
+            rpi-kernel-fusb302/out/*.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Save APT cache for future builds
       - name: Move packages to temp location for caching
