@@ -17,6 +17,12 @@ overlays/build/
 **/*.egg-info/*
 **/*.eggs/*
 **/.ipynb_checkpoints/*
+# Build artifacts (wheel, sdist, build dirs)
+**/dist/*
+**/build/*
+*.whl
+*.tar.gz
+*.zip
 
 # macOS cruft
 .DS_Store

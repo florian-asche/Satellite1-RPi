@@ -53,8 +53,9 @@ docker-image:
 
 build: verify-git-is-clean | $(OUT_DIR)
 	$(DOCKER) run --rm -it \
-		-v "${PWD}":/work \
-		-v "${OUT_DIR}":/out \
+		-v "$(PWD)/..":/work \
+		-v "$(OUT_DIR)":/out \
+		-w /work/satellite1-rpi \
 		$(DOCKER_IMAGE) \
 		/usr/bin/python3 -m build --outdir /out
 
