@@ -1,4 +1,4 @@
-name: "Build: Kernel"
+name: "Build: satellite1-rpi Python Package"
 
 on:
   push:
@@ -8,11 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04-arm
-    # We need to run on an ARM64 runner or use emulation. Since we are building for arm64,
-    # we can use qemu-user-static via docker/setup-buildx-action.
-    # However, the default ubuntu-latest runner is x86_64. We'll use buildx to emulate arm64.
-    # Alternatively, we can use a self-hosted ARM64 runner, but for simplicity we use emulation.
-    # Note: Emulation is slower but acceptable for occasional builds.
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -20,8 +15,6 @@ jobs:
       - name: Restore package cache
         uses: actions/cache@v4
         with:
-          # Unpacking directly into /var/cache would result in permission errors
-          # so we need to work around this a bit.
           path: apt-cache/
           key: ${{ runner.os }}-${{ github.job }}-${{ inputs.image-name }}
           restore-keys: |
@@ -37,20 +30,29 @@ jobs:
           sudo chown -R apt-cacher-ng:apt-cacher-ng /var/cache/apt-cacher-ng
           sudo service apt-cacher-ng restart
 
-      # Only needed for 32bit build on x86_64 runner
-      - name: Set up QEMU
-        if: matrix.name == '32bit'
-        uses: docker/setup-qemu-action@v3
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
           install: true
 
-      - name: Build kernel .deb packages
-        working-directory: rpi-kernel-fusb302
+      - name: Build deb-builder Docker image
+        working-directory: satellite1-rpi
+        run: |
+          make docker-image
+
+      - name: Build satellite1-rpi Debian package (includes Python wheel)
+        working-directory: satellite1-rpi
         run: |
           make deb
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: satellite1-rpi-artifacts
+          path: |
+            satellite1-rpi/out/*.deb
+            satellite1-rpi/out/*.whl
+          if-no-files-found: error
 
       # Create Release for Tags
       - name: Create Release for Tags
@@ -62,7 +64,8 @@ jobs:
           prerelease: false
           draft: false
           files: |
-            rpi-kernel-fusb302/out/*.deb
+            satellite1-rpi/out/*.deb
+            satellite1-rpi/out/*.whl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -76,7 +79,8 @@ jobs:
           prerelease: true
           draft: false
           files: |
-            rpi-kernel-fusb302/out/*.deb
+            satellite1-rpi/out/*.deb
+            satellite1-rpi/out/*.whl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
