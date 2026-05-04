@@ -56,7 +56,7 @@ build: verify-git-is-clean | $(OUT_DIR)
 		-v "${PWD}":/work \
 		-v "${OUT_DIR}":/out \
 		$(DOCKER_IMAGE) \
-		/usr/bin/python3 -m build --outdir /out
+		SETUPTOOLS_SCM_PRETEND_VERSION=$(PYPROJ_RELEASE) /usr/bin/python3 -m build --outdir /out
 
 $(OUT_DIR):
 	@echo "Creating $(OUT_DIR)"
@@ -73,7 +73,7 @@ $(DEB_TARGET): docker-image verify-git-is-clean $(DEBIAN_DIR) | $(OUT_DIR)
 	  -w /work/src \
 	  $(DOCKER_IMAGE) \
 	  bash -lc ' \
-	  	dpkg-buildpackage -b -us -uc && \
+	  	dpkg-buildpackage -b -us -uc --set-env-var=SETUPTOOLS_SCM_PRETEND_VERSION=$(PYPROJ_RELEASE) && \
 		cp ../*.deb debian/.wheelhouse/satellite1*.whl /out'
 	@echo
 	@echo "Built package: $(DEB_TARGET)"
