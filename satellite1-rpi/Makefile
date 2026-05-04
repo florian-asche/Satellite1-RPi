@@ -74,7 +74,9 @@ $(DEB_TARGET): docker-image verify-git-is-clean $(DEBIAN_DIR) | $(OUT_DIR)
 	  $(DOCKER_IMAGE) \
 	  bash -lc ' \
 	  	dpkg-buildpackage -b -us -uc && \
-		cp ../*.deb debian/.wheelhouse/satellite1*.whl /out'
+		ls -la ../ && \
+		cp ../*.deb /out && \
+		cp debian/.wheelhouse/satellite1*.whl /out'
 	@echo
 	@echo "Built package: $(DEB_TARGET)"
 
