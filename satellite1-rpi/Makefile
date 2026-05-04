@@ -7,7 +7,7 @@ PLATFORM      ?= linux/arm64
 DOCKER_MAKE   ?= docker/Makefile
 DOCKER_IMAGE  ?= satellite1-deb-builder
 
-OUT_DIR       ?= ${PWD}/build-assets
+OUT_DIR       ?= ${PWD}/out
 DEB_TARGET    := ${OUT_DIR}/$(PACKAGE_NAME)_$(SDK_VERSION)_$(ARCH).deb
 
 BUILD_DIR     ?= ${PWD}/build/sdk
