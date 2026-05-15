@@ -1,235 +1,85 @@
-# 🚧 Experimental repository 
-> **Early-stage development only.**  
-> **No support is provided yet. Use at your own risk.**
----
-## Satellite1-RPi
+# Satellite1-RPi
 
-**Raspberry Pi SDK for the Satellite1-HAT**
+**Raspberry Pi SDK for the Satellite1 HAT**
 
-This repository contains all components required to run the Satellite1-HAT on a Raspberry Pi Zero W2:
+Satellite1-RPi is a complete software stack for running the Satellite1 HAT on a Raspberry Pi Zero 2WH. It provides a custom kernel with USB-C Power Delivery support, device tree overlays, ALSA audio configuration, and a Python SDK with CLI tools for hardware control.
 
-- **`satellite1-rpi`** — Python SDK library
-- **`satellite1-rpi-setup`** — Raspberry Pi configuration packaged as a `.deb`
-- **`rpi-kernel-fusb302`** — Custom Raspberry Pi kernel with USB-C Power Delivery support
+**Target Platform:** Raspberry Pi Zero W2
+**OS:** Raspberry Pi OS (Bookworm)
 
-- **`image-builder`** — Generates SD-card images with everything preinstalled
+> **Early-stage development:**
+> This is early-stage experimental software. No official support is provided yet. For issues and feature requests, open an issue on the GitHub repository:
+> https://github.com/futureproofhomes/Satellite1-RPi/issues
 
-> **Target Platform:** Raspberry Pi Zero W2
-> **OS:** Raspberry Pi OS (Bookworm)
+## Overview
 
----
+The repository is organized into four packages:
 
-## Table of contents
-- [Quick start](#quick-start)
-- [RPi Setup](#rpi-setup)
-- [CLI Usage](#cli-usage)
-- [Development](#development)
 
----
+| Package                                         | Description                                                      | Status           |
+| ------------------------------------------------- | ------------------------------------------------------------------ | ------------------ |
+| [`satellite1-rpi`](satellite1-rpi/)             | Python SDK library and CLI tools (`sat1`)                        | Stable           |
+| [`satellite1-rpi-setup`](satellite1-rpi-setup/) | Raspberry Pi configuration: overlays, ALSA config, init service  | Stable           |
+| [`rpi-kernel-fusb302`](rpi-kernel-fusb302/)     | Custom kernel with USB-C Power Delivery (FUSB302) support        | Stable           |
+| [`image-builder`](image-builder/)               | Automated SD card image generation (all components preinstalled) | In Progress ⚠️ |
 
-## Quick start
+## Quick Start
 
-### Flash the Satellite1 SDK Image
-The easiest way to set up the Satellite1-HAT is to flash the prepared **Satellite1 SDK Image**.  
-This image includes:
+### Pre-Build Image
 
-- Raspberry Pi OS (Bookworm)
-- Custom kernel with FUSB302 USB-C PD support
-- All necessary overlays and configuration
-- The Satellite1 Python SDK + CLI
-- Automatic DAC initialization at boot
+The fastest way to get started is to flash the pre-built [PiCompose Satellite1 Image](https://github.com/florian-asche/PiCompose). This single image includes the OS, custom kernel, overlays, SDK, and all configuration.
 
-**Steps:**
+For the Installation steps please follow the [PiCompose documentation](https://github.com/florian-asche/PiCompose#installation).
 
-1. Install **Raspberry Pi Imager**  
-2. In *Application Settings*, set:  
-   **Content Repository → `<your repository URL>`**
-3. Select the **Satellite1 SDK Image**
-4. Flash it to an SD card  
-5. Boot the Raspberry Pi Zero W2 with the Satellite1-HAT installed
+### Manual Setup
 
----
+If building from source or installing packages manually, follow these steps in order.
 
-## RPi Setup
-
-### 1. Kernel with USB-C Power Delivery Support
-
-The default kernel shipped with Raspberry Pi OS does **not** include support for USB-C Power Delivery.
-
-Install the custom kernel:
-
-```bash
-sudo dpkg -i linux-image-6.12.58-fusb302-rpi-v8_2_arm64.deb
-```
-
-This kernel includes:
-
-```
-CONFIG_TYPEC=m
-CONFIG_TYPEC_TCPM=m
-CONFIG_TYPEC_TCPCI=m
-CONFIG_TYPEC_FUSB302=m
-```
-
-Reboot after installation.
-
----
-
-### 2. Device Tree Overlays and Module Configuration
-
-Install the setup package:
-
-```bash
-sudo dpkg -i satellite1-rpi-setup_1.0-1_arm64.deb
-```
-
-Installs and configures:
-
-- FUSB302 overlay (USB-C PD)
-- Satellite1 I²S audio overlay
-- `/etc/alsa/conf.d/50-satellite1.conf`
-- Loads `i2c-dev` on startup
-- Enables SPI, I²S, and I2C in `/boot/firmware/config.txt`
-- Adds sensor overlay:  
-  `i2c-sensor,addr=0x38,chip=aht20`
-
----
-
-### 3. Python Satellite1 SDK
-
-```bash
-sudo dpkg -i satellite1-rpi-sdk_0.1.5_arm64.deb
-```
-
-This will:
-
-- Create a venv at `/opt/satellite1/venv`
-- Install the Satellite1 Python library
-- Install the `sat1` CLI in `/usr/bin/sat1`
-- Install `satellite1-init.service` (initializes DACs at boot)
-
----
+1. [Install the Custom Kernel](rpi-kernel-fusb302/README.md#installation)
+2. [Install System Configuration](satellite1-rpi-setup/README.md#installation)
+3. [Install the Python SDK](satellite1-rpi/README.md#installation)
 
 ## CLI Usage
 
-The `sat1` CLI provides control over:
+The `sat1` command provides unified control over Satellite1 hardware subsystems.
 
-- DAC  
-- XMOS  
-- USB-C PD
-
----
-
-### Global Usage
-
-```bash
-sat1 [-h] [--config CONFIG] [-v] {dac,xmos,pd} ...
-```
-
-#### Components
-
-| Component | Description |
-|----------|-------------|
-| `dac`    | DAC audio controls |
-| `xmos`   | XMOS interface and firmware controls |
-| `pd`     | USB-C PD contract status |
-
-#### Options
-
-| Option | Description |
-|--------|-------------|
-| `-h`, `--help` | Show help |
-| `--config FILE` | Custom TOML config (default `/etc/satellite1.conf`) |
-| `-v`, `--verbose` | Increase verbosity |
-
----
-
-## DAC Controls
-
-```bash
-sat1 dac [options] {volume,set-volume,mute,unmute,setup,plugged-in,status}
-```
-
-### Commands
-
-| Command | Description |
-|---------|-------------|
-| `volume` | Read current volume |
-| `set-volume` | Set volume |
-| `mute` | Mute line-out |
-| `unmute` | Unmute line-out |
-| `setup` | Initialize DAC |
-| `plugged-in` | Detect headphone jack |
-| `status` | Show status |
-
----
-
-### DAC Selection
-
-```bash
---dac {auto,line-out,speaker}
-```
-
----
-
-### Line-Out Overrides
-
-| Option | Description |
-|--------|-------------|
-| `--line-out-enabled` / `--no-line-out-enabled` | Enable/disable line-out |
-| `--line-out-startup-volume <0..1>` | Initial volume |
-| `--line-out-startup-muted` / `--no-line-out-startup-muted` | Mute at startup |
-| `--line-out-restore-on-startup` / `--no-line-out-restore-on-startup` | Restore previous state |
-
----
-
-### Speaker Overrides
-
-| Option | Description |
-|--------|-------------|
-| `--speaker-enabled` / `--no-speaker-enabled` | Enable/disable speaker |
-| `--speaker-startup-volume <0..1>` | Startup volume |
-| `--speaker-startup-muted` / `--no-speaker-startup-muted` | Mute at startup |
-| `--speaker-restore-on-startup` / `--no-speaker-restore-on-startup` | Restore previous state |
-| `--speaker-channel {left,right,dwn_mix}` | Output routing |
-| `--speaker-amp-level <int>` | Amplifier gain |
-
----
-
-## XMOS Controls
-
-```bash
-sat1 xmos {setup,read-firmware,read-status,reset,enable-flashing,disable-flashing,run-spi-test,set-mic-output,flash-firmware}
-```
-
-### Commands
-
-| Command | Description |
-|---------|-------------|
-| `setup` | Initialize SPI/GPIO |
-| `read-firmware` | Read firmware version |
-| `read-status` | Read status register |
-| `reset` | Toggle reset |
-| `enable-flashing` | Enter flashing mode |
-| `disable-flashing` | Exit flashing mode |
-| `run-spi-test` | SPI echo test |
-| `set-mic-output` | Configure I²S microphone routing |
-| `flash-firmware` | Flash XMOS firmware |
-
----
-
-## Power Delivery
-
-```bash
-sat1 pd
-```
-
-Shows current USB-C Power Delivery contract.
-
----
+[More documentation about that here](satellite1-rpi/README.md#cli-usage)
 
 ## Development
 
+### Repository structure
 
-More documentation coming soon.
+```
+Satellite1-RPi/
+├── satellite1-rpi/          # Python SDK (pyproject.toml, src/, tests/)
+├── satellite1-rpi-setup/    # System config (debian/, dt-overlays/, etc/)
+├── rpi-kernel-fusb302/      # Kernel (config/, Dockerfile, build script)
+├── image-builder/           # Image gen (Dockerfile, pi-gen config/stage)
+└── README.md                # This file
+```
 
+## Troubleshooting
+
+### DAC not responding
+
+- Verify `satellite1-init.service` is active: `sudo systemctl status satellite1-init`
+- Check that the I²C interface is enabled: `ls /dev/i2c-*`
+- Ensure the FUSB302 kernel module is loaded: `lsmod | grep fusb302`
+
+### CLI reports "connection refused"
+
+The HAT may not be properly seated on the Raspberry Pi GPIO header. Power off, reseat the HAT, and power on again.
+
+### Kernel module errors
+
+Confirm you are running the custom kernel: `uname -r`. If still on the stock kernel, ensure `linux-image-6.12.58-fusb302-rpi-v8` is installed and the bootloader is configured to load it.
+
+### Audio output silent
+
+- Check ALSA configuration: `cat /etc/alsa/conf.d/50-satellite1.conf`
+- Use `alsamixer` to ensure DAC and speaker outputs are unmuted
+- Confirm `satellite1-init.service` successfully initialized the DAC
+
+## License
+
+See the [LICENSE](LICENSE) file. The code is provided as-is for hobbyist and evaluation use.
