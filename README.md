@@ -7,7 +7,7 @@ Satellite1-RPi is a complete software stack for running the Satellite1 HAT on a 
 **Target Platform:** Raspberry Pi Zero W2
 **OS:** Raspberry Pi OS (Bookworm)
 
-> **Early-stage development:**
+> **⚠️ Early-stage development:**
 > This is early-stage experimental software. No official support is provided yet. For issues and feature requests, open an issue on the GitHub repository:
 > https://github.com/futureproofhomes/Satellite1-RPi/issues
 
