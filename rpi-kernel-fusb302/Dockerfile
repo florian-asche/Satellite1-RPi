@@ -13,11 +13,13 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     libssl-dev \
     libelf-dev \
     dwarves \
+    libdw-dev \
     cpio \
     kmod \
     fakeroot \
     dpkg-dev \
     debhelper \
+    python3 \
     rsync \
     lsb-release \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
