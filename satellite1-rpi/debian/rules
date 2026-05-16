@@ -1,6 +1,9 @@
 #!/usr/bin/make -f
 export DH_VERBOSE=1
 
+# Abort immediately on any recipe error
+.SHELLFLAGS := set -e;
+
 # Provide version to setuptools-scm from Debian changelog
 DPKG_VERSION := $(shell dpkg-parsechangelog -ldebian/changelog --show-field Version)
 UPSTREAM_VERSION := $(shell echo $(DPKG_VERSION) | cut -d- -f1)

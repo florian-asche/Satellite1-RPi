@@ -32,8 +32,12 @@ case "$1" in
       exit 1
     fi
 
-    # 5) Install our wheel, resolving deps from our wheelhouse
-    "$VENVDIR/bin/pip" install --no-index --find-links="$WHEELDIR" --force-reinstall "$WHEEL"
+    # 5) Install our wheel, resolving deps from our wheelhouse.
+    #    Fall back to online install if a dep (e.g. spidev) is absent from the wheelhouse.
+    if ! "$VENVDIR/bin/pip" install --no-index --find-links="$WHEELDIR" --force-reinstall "$WHEEL"; then
+      echo "postinst: wheelhouse install incomplete, retrying with online index..." >&2
+      "$VENVDIR/bin/pip" install --find-links="$WHEELDIR" --force-reinstall "$WHEEL"
+    fi
 
     # 6) (optional) byte-compile
     "$VENVDIR/bin/python" -m compileall -q "$VENVDIR/lib" || true
