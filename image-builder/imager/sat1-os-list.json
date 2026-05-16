@@ -14,7 +14,7 @@
   },
   "os_list": [
     {
-      "name": "Satellite1 RPi (Bookworm 64bit)",
+      "name": "Satellite1 RPi (Trixie 64bit)",
       "description": "A customized operating system for Raspberry Pi",
       "icon": "https://futureproofhomes.net/cdn/shop/files/square_transparent_black_logo_300x300_5f243ad3-26e3-4316-93ea-707065243111.png?v=1718239651&width=140",
       "url": "http://localhost:8080/2025-12-01-satellite1-rpi.img",

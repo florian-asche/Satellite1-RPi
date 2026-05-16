@@ -5,7 +5,7 @@
 Satellite1-RPi is a complete software stack for running the Satellite1 HAT on a Raspberry Pi Zero 2WH. It provides a custom kernel with USB-C Power Delivery support, device tree overlays, ALSA audio configuration, and a Python SDK with CLI tools for hardware control.
 
 **Target Platform:** Raspberry Pi Zero W2
-**OS:** Raspberry Pi OS (Bookworm)
+**OS:** Raspberry Pi OS (Trixie)
 
 > **⚠️ Early-stage development:**
 > This is early-stage experimental software. No official support is provided yet. For issues and feature requests, open an issue on the GitHub repository:
@@ -72,7 +72,7 @@ The HAT may not be properly seated on the Raspberry Pi GPIO header. Power off, r
 
 ### Kernel module errors
 
-Confirm you are running the custom kernel: `uname -r`. If still on the stock kernel, ensure `linux-image-6.12.58-fusb302-rpi-v8` is installed and the bootloader is configured to load it.
+Confirm you are running the custom kernel: `uname -r`. If still on the stock kernel, ensure `linux-image-6.18.29-fusb302-rpi-v8` is installed and the bootloader is configured to load it.
 
 ### Audio output silent
 

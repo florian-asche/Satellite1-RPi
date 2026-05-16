@@ -4,7 +4,7 @@ Builds a Debian-packaged Raspberry Pi kernel with USB-C Power Delivery (FUSB302)
 
 ## Overview
 
-The default Raspberry Pi OS kernel does **not** include USB-C Power Delivery support. This repository provides a custom kernel built from the Raspberry Pi Linux 6.12.y branch with the necessary drivers enabled as modules:
+The default Raspberry Pi OS kernel does **not** include USB-C Power Delivery support. This repository provides a custom kernel built from the Raspberry Pi Linux 6.18.y branch with the necessary drivers enabled as modules:
 
 - `CONFIG_TYPEC=m`
 - `CONFIG_TYPEC_TCPM=m`
@@ -15,11 +15,11 @@ The default Raspberry Pi OS kernel does **not** include USB-C Power Delivery sup
 
 The build produces standard Debian kernel packages:
 
-- `linux-image-6.12.58-fusb302-rpi-v8_2_arm64.deb` — kernel image and modules
-- `linux-headers-6.12.58-fusb302-rpi-v8_2_arm64.deb` — development headers (optional)
+- `linux-image-6.18.29-fusb302-rpi-v8_2_arm64.deb` — kernel image and modules
+- `linux-headers-6.18.29-fusb302-rpi-v8_2_arm64.deb` — development headers (optional)
 
-The version string `6.12.58-fusb302-rpi-v8` consists of:
-- Base version: `6.12.58` (Raspberry Pi branch revision)
+The version string `6.18.29-fusb302-rpi-v8` consists of:
+- Base version: `6.18.29` (Raspberry Pi branch revision)
 - Local version suffix: `-fusb302-rpi-v8`
 - Debian revision: `2` (the third component in the `.deb` filename)
 
@@ -30,7 +30,7 @@ The default Raspberry Pi OS kernel lacks USB-C Power Delivery support.
 Install the custom kernel package:
 
 ```bash
-sudo dpkg -i linux-image-6.12.58-fusb302-rpi-v8_*_arm64.deb
+sudo dpkg -i linux-image-6.18.29-fusb302-rpi-v8_*_arm64.deb
 ```
 
 The kernel enables these modules:
@@ -52,7 +52,7 @@ Verify after reboot:
 
 ```bash
 uname -r
-# Should display: 6.12.58-fusb302-rpi-v8
+# Should display: 6.18.29-fusb302-rpi-v8
 ```
 
 4. Check that FUSB302 module is loaded:
@@ -88,7 +88,7 @@ Runtime dependencies on target:
 rpi-kernel-fusb302/
 ├── config/
 │   └── kernel.config   # Kernel configuration (defconfig + enabled modules)
-├── Dockerfile          # Build environment (Debian Bookworm + kernel build deps)
+├── Dockerfile          # Build environment (Debian Trixie + kernel build deps)
 ├── build-rpi-kernel-deb.sh  # Build script executed inside container
 ├── builddeb.patch      # Patches Raspberry Pi's debian/rules for custom LOCALVERSION
 └── Makefile            # Build orchestration
@@ -127,9 +127,9 @@ Built packages appear in `out/`:
 
 ```
 out/
-├── linux-image-6.12.58-fusb302-rpi-v8_2_arm64.deb
-├── linux-headers-6.12.58-fusb302-rpi-v8_2_arm64.deb
-└── linux-libc-dev-arm64-cross_6.12.58-2_arm64.deb (if cross-built)
+├── linux-image-6.18.29-fusb302-rpi-v8_2_arm64.deb
+├── linux-headers-6.18.29-fusb302-rpi-v8_2_arm64.deb
+└── linux-libc-dev-arm64-cross_6.18.29-2_arm64.deb (if cross-built)
 ```
 
 ### Build variables
@@ -186,7 +186,7 @@ The Docker build uses `linux/arm64` platform emulation via `buildx`. This works 
 
 To update to a newer Raspberry Pi kernel branch:
 
-1. Update the branch in `Dockerfile` (line cloning `rpi-6.12.y` or newer)
+1. Update the branch in `Dockerfile` (line cloning `rpi-6.18.y` or newer)
 2. Re-run the build; the new kernel will be installed side-by-side
 3. Update `/boot/firmware/config.txt` to load the new kernel image (if not auto-selected by `rpi-eeprom-update`)
 

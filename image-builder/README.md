@@ -8,7 +8,7 @@ Docker-based tooling to build complete Raspberry Pi OS SD card images with all S
 
 The `image-builder` creates ready-to-flash SD card images that include:
 
-- Raspberry Pi OS (Bookworm) base
+- Raspberry Pi OS (Trixie) base
 - Custom kernel with FUSB302 USB-C PD support
 - Satellite1 device tree overlays and ALSA config
 - Satellite1 Python SDK and CLI
@@ -49,7 +49,7 @@ build-assets/
 ├── pkg.list                # List of .deb filenames to include
 ├── satellite1-rpi-sdk_*.deb
 ├── satellite1-rpi-setup_*.deb
-└── linux-image-6.12.58-fusb302-rpi-v8_*.deb
+└── linux-image-6.18.29-fusb302-rpi-v8_*.deb
 ```
 
 These can be built separately via the top-level Makefile or manually copied.

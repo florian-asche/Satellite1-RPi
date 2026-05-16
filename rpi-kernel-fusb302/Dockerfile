@@ -1,4 +1,4 @@
-FROM debian:bookworm
+FROM debian:trixie
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -24,8 +24,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 
 WORKDIR /usr/src
 
-# Clone Raspberry Pi Linux (6.12 branch)
-RUN git clone --depth=1 -b rpi-6.12.y https://github.com/raspberrypi/linux.git rpi-linux
+# Clone Raspberry Pi Linux (6.18 branch)
+RUN git clone --depth=1 -b rpi-6.18.y https://github.com/raspberrypi/linux.git rpi-linux
 
 WORKDIR /usr/src/rpi-linux
 
