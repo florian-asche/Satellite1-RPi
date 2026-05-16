@@ -2,12 +2,13 @@
 export DH_VERBOSE=1
 
 # Abort immediately on any recipe error
-.SHELLFLAGS := set -e;
+.SHELLFLAGS := -e -c
 
 # Provide version to setuptools-scm from Debian changelog
 DPKG_VERSION := $(shell dpkg-parsechangelog -ldebian/changelog --show-field Version)
 UPSTREAM_VERSION := $(shell echo $(DPKG_VERSION) | cut -d- -f1)
 export SETUPTOOLS_SCM_PRETEND_VERSION := $(UPSTREAM_VERSION)
+export SETUPTOOLS_USE_DISTUTILS=stdlib
 
 # Wheelhouse build dirs (throwaway)
 BUILD_VENV   := $(CURDIR)/debian/.build-venv
