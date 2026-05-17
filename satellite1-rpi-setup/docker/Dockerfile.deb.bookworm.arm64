@@ -15,6 +15,7 @@ RUN dpkg --add-architecture arm64 && apt-get update && \
       devscripts debhelper dh-python dpkg-dev fakeroot \
       git-buildpackage \
       python3-venv python3-pip python3-build \
+      python3-setuptools-scm \
       python3-installer python3-setuptools python3-wheel \
       python3-all \
       vim \
