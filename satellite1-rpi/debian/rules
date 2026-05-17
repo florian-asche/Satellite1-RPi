@@ -25,14 +25,12 @@ override_dh_auto_build-arch:
 	# Fresh build venv
 	rm -rf $(BUILD_VENV)
 	python3 -m venv $(BUILD_VENV)
-	$(BUILD_VENV)/bin/pip install --upgrade 'pip>=23' 'setuptools>=61.0' 'wheel'
-	$(BUILD_VENV)/bin/pip install --upgrade 'setuptools-scm[simple]>=8'
+	$(BUILD_VENV)/bin/pip install --upgrade 'pip>=23' 'setuptools>=61.0' 'wheel' 'build'
 
 	# Build a COMPLETE wheelhouse: your pkg + ALL deps (platform-specific wheels)
 	rm -rf $(WHEELHOUSE)
 	mkdir -p $(WHEELHOUSE)
-	PYTHONPATH=$(BUILD_VENV)/lib/python3*/site-packages:$(BUILD_VENV)/lib/python3*/dist-packages \
-	$(BUILD_VENV)/bin/pip wheel --no-build-isolation --wheel-dir $(WHEELHOUSE) $(PRJ_ROOT)
+	$(BUILD_VENV)/bin/python -m build --wheel --outdir $(WHEELHOUSE) $(PRJ_ROOT)
 
 override_dh_auto_install-arch:
 	dh_auto_install
