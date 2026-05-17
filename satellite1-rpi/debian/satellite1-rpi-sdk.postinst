@@ -36,6 +36,8 @@ case "$1" in
     #    Fall back to online install if a dep (e.g. spidev) is absent from the wheelhouse.
     if ! "$VENVDIR/bin/pip" install --no-index --find-links="$WHEELDIR" --force-reinstall "$WHEEL"; then
       echo "postinst: wheelhouse install incomplete, retrying with online index..." >&2
+      echo "retry online..." >&2
+      unset PIP_NO_INDEX
       "$VENVDIR/bin/pip" install --find-links="$WHEELDIR" --force-reinstall "$WHEEL"
     fi
 
