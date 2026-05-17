@@ -12,10 +12,11 @@ RUN dpkg --add-architecture arm64 && apt-get update && \
       libbcm2835-dev:arm64 \
       linux-libc-dev:arm64 \
       libc6-dev:arm64 libstdc++-12-dev:arm64 libusb-1.0-0-dev:arm64 \
-      # packaging stack
-      devscripts debhelper dh-python dpkg-dev fakeroot \
-      git-buildpackage \
-      vim \
+# packaging stack
+       devscripts debhelper dh-python dpkg-dev fakeroot \
+       git-buildpackage \
+       python3-all python3-setuptools python3-wheel python3-setuptools-scm \
+       vim \
       # dtc for building .dtbo from .dts
       device-tree-compiler \
       # (optional) lintian for QA
