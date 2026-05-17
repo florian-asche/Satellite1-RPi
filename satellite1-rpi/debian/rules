@@ -8,7 +8,6 @@ export DH_VERBOSE=1
 DPKG_VERSION := $(shell dpkg-parsechangelog -ldebian/changelog --show-field Version)
 UPSTREAM_VERSION := $(shell echo $(DPKG_VERSION) | cut -d- -f1)
 export SETUPTOOLS_SCM_PRETEND_VERSION := $(UPSTREAM_VERSION)
-export SETUPTOOLS_USE_DISTUTILS=stdlib
 
 # Wheelhouse build dirs (throwaway)
 BUILD_VENV   := $(CURDIR)/debian/.build-venv
@@ -33,7 +32,7 @@ override_dh_auto_build-arch:
 	$(BUILD_VENV)/bin/python -m build --wheel --outdir $(WHEELHOUSE) $(PRJ_ROOT)
 
 override_dh_auto_install-arch:
-	dh_auto_install
+	SETUPTOOLS_USE_DISTUTILS=stdlib dh_auto_install
 	for pkg in $(shell dh_listpackages); do \
 	  install -d debian/$$pkg/usr/share/satellite1/wheels ; \
 	  cp -a $(WHEELHOUSE)/*.whl debian/$$pkg/usr/share/satellite1/wheels/ ; \
