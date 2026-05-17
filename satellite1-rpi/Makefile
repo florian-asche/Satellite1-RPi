@@ -74,9 +74,7 @@ $(DEB_TARGET): docker-image verify-git-is-clean $(DEBIAN_DIR) | $(OUT_DIR)
 	  $(DOCKER_IMAGE) \
 	  bash -lc ' \
 	  	dpkg-buildpackage -b -us -uc && \
-		ls -la ../ && \
-		cp ../*.deb /out && \
-		cp debian/.wheelhouse/satellite1*.whl /out'
+		cp ../*.deb debian/.wheelhouse/satellite1*.whl /out'
 	@echo
 	@echo "Built package: $(DEB_TARGET)"
 
@@ -115,4 +113,3 @@ shell: docker-image
 		-e "PRJ_VER=$(PYPROJ_RELEASE)" \
 		$(DOCKER_IMAGE) \
 		/bin/bash
-
