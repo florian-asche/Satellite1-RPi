@@ -18,7 +18,7 @@ dependencies = [
     "RPi.GPIO>=0.7 ; sys_platform == 'linux' and (platform_machine == 'armv7l' or platform_machine == 'aarch64')",
 ]
 
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.11"
 
 [project.optional-dependencies]
 dev = ["pytest", "black"]
