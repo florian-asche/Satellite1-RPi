@@ -44,8 +44,11 @@ case "$1" in
     # 6) (optional) byte-compile
     "$VENVDIR/bin/python" -m compileall -q "$VENVDIR/lib" || true
 
-    # 7) (optional) systemd reload
-    command -v systemctl >/dev/null 2>&1 && systemctl daemon-reload || true
+    # 7) (optional) systemd reload + enable + start satellite1-init.service
+    if command -v systemctl >/dev/null 2>&1; then
+      systemctl daemon-reload
+      systemctl enable --now satellite1-init.service
+    fi
     ;;
 esac
 
